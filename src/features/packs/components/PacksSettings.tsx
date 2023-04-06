@@ -24,7 +24,7 @@ type PacksSettingsPropsType = {
 }
 
 export const PacksSettings: React.FC<PacksSettingsPropsType> = ({initialSettings, onSettingsChanged}) => {
-    const [createPack, {isLoading}] = useCreatePackMutation()
+    const [createPack, {isLoading: CreateLoading}] = useCreatePackMutation()
     const {setShowAddModal,showAddModal} = useTableQuery()
 
     const createPackHandler = async (title: string) => {
@@ -38,21 +38,18 @@ export const PacksSettings: React.FC<PacksSettingsPropsType> = ({initialSettings
     }
     return (
         <>
-            {showAddModal &&
-                <SetPackModal
-                    header={'Create pack'}
-                    isOpened={showAddModal}
-                    setIsOpened={setShowAddModal}
-                    onChangeTitle={createPackHandler}/>}
-            {isLoading && <CircularLoader/>}
             <FlexContainer height="100px" justifyContent="space-between">
                 <FlexContainer justifyContent="flex-start">
                     <h2>Packs list</h2>
                     <MenuBar/>
                 </FlexContainer>
-
-                <Button onClick={()=>setShowAddModal(true)} style={{width: '150px'}} variant={'outlined'}>Add pack</Button>
+                <Button
+                    style={{width: '150px'}}
+                    variant={'outlined'}
+                    onClick={()=>setShowAddModal(true)}>Add pack
+                </Button>
             </FlexContainer>
+
             <FlexContainer margin="0 auto" height="100px" flexDirection="row">
                 <SearchInput onChangeInput={value => onSettingsChanged({searchString: value})}/>
                 <ButtonsSwitcher
@@ -64,6 +61,15 @@ export const PacksSettings: React.FC<PacksSettingsPropsType> = ({initialSettings
                     min={initialSettings?.slider?.minCount || 0}/>
                 <FilterAltOffOutlined/>
             </FlexContainer>
+
+            {CreateLoading && <CircularLoader/>}
+            {showAddModal && <SetPackModal header={'Create pack'}
+                                           title={''}
+                                           isOpened={showAddModal}
+                                           onClose={() => setShowAddModal(false)}
+                                           onTitleChanged={createPackHandler}/>
+            }
+
         </>
     );
 }

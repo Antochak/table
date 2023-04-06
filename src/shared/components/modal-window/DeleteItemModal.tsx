@@ -1,19 +1,22 @@
 import React from 'react';
-import {FlexContainer, TextContainer} from "../..";
-import {BasicModal} from "./BasicModal";
-import {Button} from "@mui/material";
+import { Button } from "@mui/material";
+import { BasicModal } from "./BasicModal";
+import { FlexContainer, TextContainer } from "../..";
 
 type DeleteItemPropsType = {
     isOpened:boolean
-    setIsOpened:(value: boolean) => void
+    onClose:() => void
     deleteItemHandler: ()=>void
     itemTitle: string
 }
 
-export const DeleteItemModal:React.FC<DeleteItemPropsType> = ({itemTitle,setIsOpened,isOpened,deleteItemHandler}) => {
-    const onSubmitHandler = () => {
-        deleteItemHandler()
-    }
+export const DeleteItemModal:React.FC<DeleteItemPropsType> = (
+    {
+        itemTitle,
+        onClose,
+        isOpened,
+        deleteItemHandler
+    }) => {
     return (
         <BasicModal isOpened={isOpened}>
             <h2>Delete {itemTitle} ?</h2>
@@ -23,12 +26,12 @@ export const DeleteItemModal:React.FC<DeleteItemPropsType> = ({itemTitle,setIsOp
             <FlexContainer justifyContent="space-around" flexDirection="row">
                 <Button
                     style={{marginTop: '20px', width: '130px'}}
-                    onClick={onSubmitHandler}
-                    variant={'contained'}
-                >OK</Button>
+                    onClick={deleteItemHandler}
+                    variant={'contained'}> OK
+                </Button>
                 <Button
                     style={{marginTop: '20px', backgroundColor: "red",  width: '130px'}}
-                    onClick={()=>setIsOpened(false)}
+                    onClick={()=>onClose()}
                     variant={'contained'}
                 >Cancel</Button>
             </FlexContainer>

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { PATH } from "../../shared/constants/path";
 import { SnackType } from "../../shared/constants/snackType";
 import { MainTable } from "../../shared/components/table/MainTable";
-import { LearnIcon } from "../../shared/components/packs-icons/learnIcon";
 import { ActionIcons } from "../../shared/components/packs-icons/ActionIcons";
 import { Paginations } from "../../shared/components/pagination/Pagination";
 import { usePackQuery } from "./hooks/usePackQuery";
@@ -24,33 +23,28 @@ export const PacksContainer = () => {
         onItemsSettingsChange,
         urlSearchParams,
         userData,
-        showDelModal,
-        showEditModal,
-        setShowDelModal,
-        setShowEditModal,
-        currentItem,
-        setCurrentItem,
-        setItemTitle,
-        itemTitle,
-        packsTableHead,
+        editingModalItem,
+        setEditingModalItem,
+        deletingModalItem,
+        setDeletingModalItem,
         dateFormatter
     } = useTableQuery()
     const {data, message, changePackTitle, deletePack, delLoading, getLoading, error} = usePackQuery(urlSearchParams)
 
-    const onSetItemToDelete = (id: string, itemTitle: string) => {
-        setCurrentItem(id)      // удаляем по id
-        setItemTitle(itemTitle)  // прокидываем имя item'а в модалку, "Do you really want to delete {itemTitle} ? "
-    }
     const deleteItemHandler = async(id: string) => {
         try {
             await deletePack({id})
         } catch(error) {
             console.warn(error)
         }
-        setShowDelModal(false)  // удаляем Pack , подтверждая нажатием Ok в модальном окне
+        setDeletingModalItem(null)  // удаляем Pack , подтверждая нажатием Ok в модальном окне
     }
-    const onSetItemToEdit = (currentItem: string) => setCurrentItem(currentItem)  // сетаем в стейт  нужный Pack для редактирования
-    const changePackTitleHandler = async (id: string, title: string) => {
+
+    const showEditItemModal = (id: string, title: string) => {
+        console.log('titleContainer', title)
+        setEditingModalItem({ id, title }) // сетаем в стейт  нужный Pack для редактирования
+    }
+    const updateItemHandler = async (id: string, title: string) => {
         await changePackTitle({
             cardsPack: {
                 _id: id,
@@ -65,21 +59,22 @@ export const PacksContainer = () => {
         if(!isLoggedIn) navigate(PATH.LOGIN)
     },[navigate, isLoggedIn])
 
-    const tableHead = packsTableHead.map((cell,index) => <TableCell align="center" key={index}>{cell}</TableCell>)
+    const tableHead = ['Name', 'Cards', 'Last Updated', 'Created by', 'Actions'].map((title,index) => (
+        <TableCell align="center" key={index + title}>{title}</TableCell>
+    ))
     const tableBody = data?.cardPacks.map((row) => (
         <TableRow key={row._id}>
             <TableCell onClick={()=>openCardHandler(row._id)} style={{cursor: 'pointer'}}>{row.name}</TableCell>
             <TableCell align="center">{row.cardsCount}</TableCell>
             <TableCell align="center">{dateFormatter(row.updated)}</TableCell>
             <TableCell align="center">{row.user_name}</TableCell>
-            <TableCell align="center">{userData._id == row.user_id
-                ? <ActionIcons
-                    id={row._id}
-                    setShowEditModal={setShowEditModal}
-                    setShowDelModal={setShowDelModal}
-                    itemForDelete={()=>onSetItemToDelete(row._id, row.name)}
-                    itemForEdit={()=>onSetItemToEdit(row._id)} />
-                : <LearnIcon packId={row._id} disabled={row.cardsCount === 0}/>}
+            <TableCell align="center">
+                <ActionIcons
+                    showEditButtons={userData._id == row.user_id}
+                    onDeleteIconClick={() => setDeletingModalItem({ id: row._id, title: row.name })}
+                    onEditIconClick={() => showEditItemModal(row._id, row.name)}
+                    learnIconDisabled={row.cardsCount === 0}
+                    onLearnIconClick={() => navigate(`/learn/${row._id}`)}/>
             </TableCell>
         </TableRow>
     ))
@@ -97,22 +92,21 @@ export const PacksContainer = () => {
                 <CardsSelector itemsPerPage={data?.pageCount || 5} onChange={setSearchParams}/>
             </FlexContainer>
 
-            {showEditModal &&
-                <SetPackModal header={'Update pack'}
-                              isOpened={showEditModal}
-                              setIsOpened={setShowEditModal}
-                              onChangeTitle={(title)=>changePackTitleHandler(currentItem,title)} />
-            }
+            {editingModalItem?.title && 
+                <SetPackModal
+                    header={'Update pack'}
+                    title={editingModalItem?.title}
+                    isOpened={!!editingModalItem}
+                    onClose={() => setEditingModalItem(null)}
+                    onTitleChanged={title => editingModalItem && updateItemHandler(editingModalItem.id, title)}/>}
 
-            {showDelModal &&
-                <DeleteItemModal setIsOpened={setShowDelModal}
-                                 isOpened={showDelModal}
-                                 itemTitle={itemTitle}
-                                 deleteItemHandler={() => deleteItemHandler(currentItem)}/>
-            }
+            <DeleteItemModal
+                isOpened={!!deletingModalItem}
+                onClose={() => setDeletingModalItem(null)}
+                itemTitle={deletingModalItem?.title || ''}
+                deleteItemHandler={() => deletingModalItem && deleteItemHandler(deletingModalItem.id)}/>
 
             {(getLoading || delLoading) && <CircularLoader/>}
-
             {error && <PopUpSnackbar error={message} popUpType={SnackType.ERROR}/>}
         </FlexContainer>
     );

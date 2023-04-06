@@ -1,19 +1,14 @@
-import { useMeQuery } from "../../features/authentification/api/authApi";
-import { useAppSelector } from "../../store";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { ButtonsSwitcherOption } from "../components/button-group/ButtonGroup";
 import { useState } from "react";
+import { useMeQuery } from "../../features/authentification/api";
+import { useAppSelector } from "../../store";
+import { ButtonsSwitcherOption } from "../components/button-group/ButtonGroup";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const useTableQuery = () => {
     const [showAddModal, setShowAddModal] = useState(false)
-    const [showDelModal, setShowDelModal] = useState(false)
-    const [showEditModal, setShowEditModal] = useState(false)
-
-    const [currentItem,setCurrentItem] = useState('')
-    const [itemTitle,setItemTitle] = useState('')
-
-    const packsTableHead = ['Name', 'Cards', 'Last Updated', 'Created by', 'Actions']
-    const cardsTableHead = ['Question', 'Answer', 'Last Updated', 'Grade', 'Actions']
+    const [editingModalItem, setEditingModalItem] = useState<{ id: string, title?: string, answer?: string } | null>(null)
+    const [deletingModalItem, setDeletingModalItem] = useState<{ id: string, title?: string } | null>()
+    console.log('editingModalItem', editingModalItem)
 
     const {data: userData} = useMeQuery({})
     const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
@@ -55,19 +50,12 @@ export const useTableQuery = () => {
         urlSearchParams,
         setSearchParams,
         userData,
-        cardsTableHead,
         showAddModal,
-        showDelModal,
-        showEditModal,
+        deletingModalItem,
+        setDeletingModalItem,
         setShowAddModal,
-        setShowDelModal,
-        setShowEditModal,
-        currentItem,
-        setCurrentItem,
-        itemTitle,
-        setItemTitle,
-        packsTableHead,
+        editingModalItem,
+        setEditingModalItem,
         dateFormatter
     }
 };
-

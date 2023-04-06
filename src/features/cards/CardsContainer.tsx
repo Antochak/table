@@ -20,15 +20,12 @@ export const CardsContainer = () => {
         onItemsSettingsChange,
         urlSearchParams,
         userData,
-        cardsTableHead,
-        showDelModal,
-        showEditModal,
-        setShowDelModal,
-        setShowEditModal,
+        editingModalItem,
+        setEditingModalItem,
+        deletingModalItem,
+        setDeletingModalItem,
         showAddModal,
         setShowAddModal,
-        currentItem,
-        setCurrentItem,
         dateFormatter
     } = useTableQuery()
     const {
@@ -42,12 +39,11 @@ export const CardsContainer = () => {
         id,
     } = useCardsQuery(urlSearchParams)
 
-    const deleteItemHandler = (id: string) => setCurrentItem(id)
-    const onSetItemToEdit = (currentItem: string) => setCurrentItem(currentItem)  // сетаем в стейт  нужный Pack для редактирования
+    const onSetItemToEdit = (item: { id: string, title: string, answer: string }) => setEditingModalItem(item)
 
     const deleteCardHandler = async (id: string) => {
         await deleteCard({id})
-        setShowDelModal(false)
+        setDeletingModalItem(null)
     }
     const editCardHandler = async (id: string, question: string, answer: string) => {
         await editCard({
@@ -70,8 +66,8 @@ export const CardsContainer = () => {
         setShowAddModal(false)
     }
 
-    const cardsTHead = cardsTableHead.map((cell, index) => (
-        <TableCell align="center" key={index}>{cell}</TableCell>
+    const cardsTHead = ['Question', 'Answer', 'Last Updated', 'Grade', 'Actions'].map((title, index) => (
+        <TableCell align="center" key={index + title}>{title}</TableCell>
     ))
     const cardsTBody = cardsData?.cards.map((row) => (
         <TableRow key={row._id}>
@@ -79,51 +75,40 @@ export const CardsContainer = () => {
             <TableCell align="center">{row.answer}</TableCell>
             <TableCell align="center">{dateFormatter(row.updated)}</TableCell>
             <TableCell align="center">{<Rating name="read-only" value={row.grade} readOnly/>}</TableCell>
-            <TableCell align="center">{userData._id == row.user_id
-            && <ActionIcons
-                id={row._id}
-                setShowEditModal={setShowEditModal}
-                setShowDelModal={setShowDelModal}
-                itemForDelete={() => deleteItemHandler(row._id)}
-                itemForEdit={() => onSetItemToEdit(row._id)}/>
-            }
+            <TableCell align="center">{userData._id == row.user_id &&
+                 <ActionIcons
+                    showEditButtons={true}
+                    onDeleteIconClick={() => setDeletingModalItem({id: row._id})}
+                    onEditIconClick={() => onSetItemToEdit({ id: row._id, title: row.question, answer: row.answer })}
+                 />}
             </TableCell>
         </TableRow>
     ))
 
     return (
         <>
-            {showEditModal &&
-            <SetCardModal
-                titleModal={'Update card'}
-                isOpened={showEditModal}
-                setIsOpened={setShowEditModal}
-                onChange={(answer, question) => editCardHandler(currentItem, answer, question)}/>
-            }
-            {showAddModal &&
-            <SetCardModal
-                titleModal={'Add card'}
-                isOpened={showAddModal}
-                setIsOpened={setShowAddModal}
-                onChange={(answer, question) => addCardHandler(answer, question)}/>
-            }
-            {showDelModal &&
-            <DeleteItemModal setIsOpened={setShowDelModal}
-                             isOpened={showDelModal}
-                             itemTitle={'this card'}
-                             deleteItemHandler={() => deleteCardHandler(currentItem)}/>}
             <FlexContainer width="900px" height="700px" margin="0 auto" flexDirection="column">
-                {(isLoadingAdd || isLoadingEdit || getLoading) &&
-                <CircularLoader/>}
-
                 <FlexContainer height="100px" justifyContent="space-between">
                     <FlexContainer flexDirection="column" alignItems="self-start">
-                        <Link onClick={() => navigate(PATH.PACKS)} style={{textDecoration: 'none', cursor: 'pointer'}}>Back to Packs List</Link>
+                        <Link
+                            onClick={() => navigate(PATH.PACKS)}
+                            style={{textDecoration: 'none', cursor: 'pointer'}}>Back to Packs List
+                        </Link>
                         <h2>Pack </h2>
                     </FlexContainer>
+
                     {userData._id === cardsData?.packUserId
-                        ? <Button variant={'outlined'} style={{width: '200px'}} onClick={() => setShowAddModal(true)}>Add new card</Button>
-                        : <Button variant={'outlined'} style={{width: '150px'}} onClick={() => navigate(`/learn/${id}`)}>Learn card</Button>}
+                        ?   <Button
+                            variant={'outlined'}
+                            style={{width: '200px'}}
+                            onClick={() => setShowAddModal(true)}>Add new card
+                        </Button>
+                        :   <Button
+                            variant={'outlined'}
+                            style={{width: '150px'}}
+                            onClick={() => navigate(`/learn/${id}`)}>Learn card
+                        </Button>
+                    }
                 </FlexContainer>
 
                 <SearchInput onChangeInput={value => onItemsSettingsChange({searchString: value})}/>
@@ -136,6 +121,32 @@ export const CardsContainer = () => {
                         onChange={(value) => setSearchParams({page: value})}/>
                     <CardsSelector itemsPerPage={cardsData?.pageCount || 5} onChange={setSearchParams}/>
                 </FlexContainer>
+
+                {editingModalItem?.answer &&
+                    <SetCardModal
+                        question={editingModalItem?.title}
+                        answer={editingModalItem?.answer}
+                        titleModal={'Update card'}
+                        isOpened={!!editingModalItem}
+                        onClose={() => setEditingModalItem(null)}
+                        onChange={(answer, question) => {
+                        editingModalItem && editCardHandler(editingModalItem.id, answer, question)}}/>
+                }
+                {showAddModal &&
+                    <SetCardModal
+                        titleModal={'Add card'}
+                        isOpened={showAddModal}
+                        onClose={() => setShowAddModal(false)}
+                        onChange={(answer, question) => addCardHandler(answer, question)}/>
+                }
+
+                <DeleteItemModal
+                    onClose={()=>setDeletingModalItem(null)}
+                    isOpened={!!deletingModalItem}
+                    itemTitle={'this card'}
+                    deleteItemHandler={() => deletingModalItem && deleteCardHandler(deletingModalItem.id)}/>
+
+                {(isLoadingAdd || isLoadingEdit || getLoading) && <CircularLoader/>}
             </FlexContainer>
         </>
     );

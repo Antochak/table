@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import {Paper, Table, TableBody, TableContainer, TableHead, TableRow} from "@mui/material";
 
 export type TablePropsType = {
-    tableBody: any
-    tableHead: any
+    tableBody: ReactNode
+    tableHead: ReactNode
 }
 export const MainTable:React.FC<TablePropsType> = ({tableBody,tableHead}) => {
 

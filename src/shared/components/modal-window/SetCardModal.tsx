@@ -4,22 +4,29 @@ import { FlexContainer } from "../..";
 import { Button, Input } from "@mui/material";
 
 type AddCardModalPropsType = {
+    question?: string
+    answer?: string
     titleModal: string
     isOpened: boolean
-    setIsOpened: (value: boolean) => void
+    onClose: () => void
     onChange: (answer: string, question: string) => void
 }
 
-export const SetCardModal: React.FC<AddCardModalPropsType> = ({titleModal,isOpened, setIsOpened, onChange}) => {
-    const [question, setQuestion] = useState('')
-    const [answer, setAnswer] = useState('')
+export const SetCardModal: React.FC<AddCardModalPropsType> = (
+    {
+        question,
+        answer,
+        titleModal,
+        isOpened,
+        onClose,
+        onChange
+    }) => {
+    const [questionState, setQuestionState] = useState(question || '')
+    const [answerState, setAnswerState] = useState(answer || '')
 
-    const handleClose = () => {
-        setIsOpened(false);
-    }
     const onSubmitHandler = () => {
-        onChange(question,answer)
-        setIsOpened(false)
+        onChange(questionState,answerState)
+        onClose()
     }
 
     return (
@@ -28,14 +35,14 @@ export const SetCardModal: React.FC<AddCardModalPropsType> = ({titleModal,isOpen
             <FlexContainer flexDirection="column" width="300px">
                 <Input
                     placeholder="Question"
-                    onChange={e => setQuestion(e.currentTarget.value)}
-                    value={question}
+                    onChange={e => setQuestionState(e.currentTarget.value)}
+                    value={questionState}
                     style={{marginTop: "20px", width: "300px"}}
                 />
                 <Input
                     placeholder="Answer"
-                    onChange={e => setAnswer(e.currentTarget.value)}
-                    value={answer}
+                    onChange={e => setAnswerState(e.currentTarget.value)}
+                    value={answerState}
                     style={{marginTop: "20px",  width: "300px"}}
                 />
                 <FlexContainer justifyContent="space-between">
@@ -50,12 +57,11 @@ export const SetCardModal: React.FC<AddCardModalPropsType> = ({titleModal,isOpen
                         variant={'contained'}
                         size={'large'}
                         style={{width: '130px', marginTop: "20px", backgroundColor: 'red'}}
-                        onClick={handleClose}>
+                        onClick={onClose}>
                         Cancel
                     </Button>
                 </FlexContainer>
             </FlexContainer>
         </BasicModal>
-
     );
 };
