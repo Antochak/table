@@ -7,7 +7,7 @@ import {InputField} from "../../../../shared/components/input/InputField";
 import {useLogin} from './useLogin'
 import {PATH} from "../../../../shared/constants/path";
 import {CircularLoader} from "../../../../shared/components/loader/CircilarLoader";
-import {PopUpSnackbar} from "../../../../shared/utils/PopUpSnackbar";
+import {PopUpSnackbar} from "../../../../shared/components/popup-snackbar/PopUpSnackbar";
 import {queryErrorHandler} from "../../../../shared/utils/QueryErrorHandler";
 import {SnackType} from "../../../../shared/constants/snackType";
 

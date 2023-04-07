@@ -1,7 +1,7 @@
 import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, {AlertProps} from '@mui/material/Alert';
-import {SnackType} from "../constants/snackType";
+import {SnackType} from "../../constants/snackType";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props, ref) {

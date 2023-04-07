@@ -9,11 +9,13 @@ import { SetPackModal } from "../../shared/components/modal-window/SetPackModal"
 import { useTableQuery } from "../../shared/hooks/useTableQuery";
 import { FlexContainer } from "../../shared";
 import { CardsSelector } from "../../shared/components/card-selector/CardsSelector";
-import { PopUpSnackbar } from "../../shared/utils/PopUpSnackbar";
+import { PopUpSnackbar } from "../../shared/components/popup-snackbar/PopUpSnackbar";
 import { PacksSettings } from "./components/PacksSettings";
 import { CircularLoader } from "../../shared/components/loader/CircilarLoader";
 import { DeleteItemModal } from "../../shared/components/modal-window/DeleteItemModal";
 import { TableCell, TableRow } from "@mui/material";
+import {useCreatePackMutation} from "./api/packsApi";
+import styled from "styled-components";
 
 export const PacksContainer = () => {
     const {
@@ -27,10 +29,21 @@ export const PacksContainer = () => {
         setEditingModalItem,
         deletingModalItem,
         setDeletingModalItem,
-        dateFormatter
+        dateFormatter,
+        image,
+        setImage
     } = useTableQuery()
-    const {data, message, changePackTitle, deletePack, delLoading, getLoading, error} = usePackQuery(urlSearchParams)
+    const {data, message, changePackTitle, deletePack, delLoading, getLoading, error, createPack } = usePackQuery(urlSearchParams)
 
+    const createPackHandler = async (title: string, file?: string) => {
+        await createPack({
+            cardsPack: {
+                name: title,
+                deckCover: file || '',
+                private: false
+            }
+        })
+    }
     const deleteItemHandler = async(id: string) => {
         try {
             await deletePack({id})
@@ -41,7 +54,6 @@ export const PacksContainer = () => {
     }
 
     const showEditItemModal = (id: string, title: string) => {
-        console.log('titleContainer', title)
         setEditingModalItem({ id, title }) // сетаем в стейт  нужный Pack для редактирования
     }
     const updateItemHandler = async (id: string, title: string) => {
@@ -64,7 +76,14 @@ export const PacksContainer = () => {
     ))
     const tableBody = data?.cardPacks.map((row) => (
         <TableRow key={row._id}>
-            <TableCell onClick={()=>openCardHandler(row._id)} style={{cursor: 'pointer'}}>{row.name}</TableCell>
+            <TableCell onClick={()=>openCardHandler(row._id)} style={{cursor: 'pointer'}}>
+                <div>
+                    <FlexContainer height="70px">
+                        {image && <Image>{image}</Image>}
+                        {row.name}
+                    </FlexContainer>
+                </div>
+            </TableCell>
             <TableCell align="center">{row.cardsCount}</TableCell>
             <TableCell align="center">{dateFormatter(row.updated)}</TableCell>
             <TableCell align="center">{row.user_name}</TableCell>
@@ -82,7 +101,7 @@ export const PacksContainer = () => {
     return (
         <FlexContainer width="900px" height="700px" margin="0 auto" flexDirection="column">
             <PacksSettings initialSettings={{slider: { minCount: data?.minCardsCount, maxCount: data?.maxCardsCount }}}
-                           onSettingsChanged={onItemsSettingsChange}/>
+                           onSettingsChanged={onItemsSettingsChange} createPackHandler={createPackHandler} />
             <MainTable tableBody={tableBody} tableHead={tableHead}/>
             <FlexContainer height="50px" width="100%" margin="10px 0 0 0">
                 <Paginations
@@ -94,6 +113,8 @@ export const PacksContainer = () => {
 
             {editingModalItem?.title && 
                 <SetPackModal
+                    image={image || ''}
+                    setImage={setImage}
                     header={'Update pack'}
                     title={editingModalItem?.title}
                     isOpened={!!editingModalItem}
@@ -111,3 +132,8 @@ export const PacksContainer = () => {
         </FlexContainer>
     );
 };
+const Image = styled.img`
+    height: 100px;
+    display: flex;
+    align-self: flex-start;
+    margin: 10px 0 10px 0;`

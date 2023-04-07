@@ -8,7 +8,7 @@ export const useTableQuery = () => {
     const [showAddModal, setShowAddModal] = useState(false)
     const [editingModalItem, setEditingModalItem] = useState<{ id: string, title?: string, answer?: string } | null>(null)
     const [deletingModalItem, setDeletingModalItem] = useState<{ id: string, title?: string } | null>()
-    console.log('editingModalItem', editingModalItem)
+    const [image, setImage] = useState<string | null>(null)
 
     const {data: userData} = useMeQuery({})
     const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
@@ -39,9 +39,9 @@ export const useTableQuery = () => {
             cardQuestion: settings.searchString ? settings.searchString : '',
         })
     }
-    let dateFormatter = (str: string) => {
-        let a = new Date(str)
-        return a.toLocaleString("en-US", {day: '2-digit', month: 'short', year: 'numeric'})
+    let dateFormatter = (dateISO: string) => {
+        let date = new Date(dateISO)
+        return date.toLocaleString("en-US", {day: '2-digit', month: 'short', year: 'numeric'})
     }
     return {
         isLoggedIn,
@@ -56,6 +56,8 @@ export const useTableQuery = () => {
         setShowAddModal,
         editingModalItem,
         setEditingModalItem,
-        dateFormatter
+        dateFormatter,
+        image,
+        setImage
     }
 };

@@ -8,6 +8,7 @@ import { createSlice } from "@reduxjs/toolkit";
     user: {
         email: string
         name: string
+        avatar: string
     }
 }
 const initialState:InitialStateType = {
@@ -15,7 +16,8 @@ const initialState:InitialStateType = {
     isInitialized: false,
     user: {
         name: '',
-        email: ''
+        email: '',
+        avatar: ''
     }
 }
 export const slice = createSlice({
@@ -30,6 +32,7 @@ export const slice = createSlice({
                 state.isLoggedIn = true
                 state.user.name = payload.name
                 state.user.email = payload.email
+                state.user.avatar = payload.avatar
             })
             .addMatcher(authApi.endpoints.login.matchFulfilled, (state, {payload}) => {
                 state.isLoggedIn = true
@@ -43,6 +46,7 @@ export const slice = createSlice({
             })
             .addMatcher(profileApi.endpoints.setNewName.matchFulfilled, (state, {payload}) => {
                 state.user.name = payload.updatedUser.name
+                state.user.avatar = payload.updatedUser.avatar
             })
     })
 })

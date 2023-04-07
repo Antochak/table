@@ -1,5 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import {FlexContainer} from "../..";
 
 type EditableSpanPropsType = {
     value: string
@@ -14,15 +16,17 @@ export const EditableSpan = React.memo(function (props: EditableSpanPropsType) {
         setEditMode(true);
         setTitle(props.value);
     }
-    const activateViewMode = () => {
-        setEditMode(false);
-        props.onChange(title);
-    }
     const changeTitle = (e: ChangeEvent<HTMLInputElement>) => {
         setTitle(e.currentTarget.value)
     }
-
+    const onSubmitHandler = () => {
+        props.onChange(title);
+        setEditMode(false);
+    }
     return editMode
-        ? <TextField variant={'standard'} style={{width: '170px'}} value={title} onChange={changeTitle} autoFocus onBlur={activateViewMode}/>
+        ? <FlexContainer>
+                <TextField variant={'standard'} style={{width: '170px'}} value={title} onChange={changeTitle} autoFocus />
+                <Button onClick={onSubmitHandler}> save </Button>
+            </FlexContainer>
         : <span onDoubleClick={activateEditMode}>{props.value}</span>
 });

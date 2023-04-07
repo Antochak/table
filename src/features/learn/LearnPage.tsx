@@ -3,7 +3,7 @@ import { PATH } from "../../shared/constants/path";
 import { useParams } from "react-router-dom";
 import { SnackType } from "../../shared/constants/snackType";
 import { FormControl } from "@mui/material/";
-import { PopUpSnackbar } from "../../shared/utils/PopUpSnackbar";
+import { PopUpSnackbar } from "../../shared/components/popup-snackbar/PopUpSnackbar";
 import { useTableQuery } from "../../shared/hooks/useTableQuery";
 import { getRandomCard } from "../../shared/utils/random-selection-card/getRandomCard";
 import { CircularLoader } from "../../shared/components/loader/CircilarLoader";

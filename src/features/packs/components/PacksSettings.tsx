@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from "@mui/material";
 import { MenuBar } from '../../../shared/components/menu-icon/MenuBar';
+import {usePackQuery} from "../hooks/usePackQuery";
 import { SearchInput } from "../../../shared/components/search-input/SearchInput";
 import { ValueSlider } from "../../../shared/components/value-slider/ValueSlider";
 import { SetPackModal } from "../../../shared/components/modal-window/SetPackModal";
@@ -8,7 +9,6 @@ import { useTableQuery } from "../../../shared/hooks/useTableQuery";
 import { FlexContainer } from "../../../shared";
 import { CircularLoader } from "../../../shared/components/loader/CircilarLoader";
 import { FilterAltOffOutlined } from "@mui/icons-material";
-import { useCreatePackMutation } from "../api/packsApi";
 import { ButtonsSwitcher, ButtonsSwitcherOption } from "../../../shared/components/button-group/ButtonGroup";
 
 type PacksSettingsPropsType = {
@@ -21,21 +21,13 @@ type PacksSettingsPropsType = {
         slider?: { min: number, max: number }
         switcherOption?: ButtonsSwitcherOption
     }) => void
+    createPackHandler: (value: string) => void
 }
 
-export const PacksSettings: React.FC<PacksSettingsPropsType> = ({initialSettings, onSettingsChanged}) => {
-    const [createPack, {isLoading: CreateLoading}] = useCreatePackMutation()
-    const {setShowAddModal,showAddModal} = useTableQuery()
+export const PacksSettings: React.FC<PacksSettingsPropsType> = ({createPackHandler, initialSettings, onSettingsChanged}) => {
+    const {setShowAddModal,showAddModal,urlSearchParams,setImage,image} = useTableQuery()
+    const {CreateLoading} = usePackQuery(urlSearchParams)
 
-    const createPackHandler = async (title: string) => {
-        await createPack({
-            cardsPack: {
-                name: title,
-                deckCover: '',
-                private: false
-            }
-        })
-    }
     return (
         <>
             <FlexContainer height="100px" justifyContent="space-between">
@@ -65,11 +57,13 @@ export const PacksSettings: React.FC<PacksSettingsPropsType> = ({initialSettings
             {CreateLoading && <CircularLoader/>}
             {showAddModal && <SetPackModal header={'Create pack'}
                                            title={''}
+                                           image={image || ''}
+                                           setImage={setImage}
                                            isOpened={showAddModal}
                                            onClose={() => setShowAddModal(false)}
-                                           onTitleChanged={createPackHandler}/>
+                                           onTitleChanged={(title) => createPackHandler(title)}
+                                           onImageChanged={(image) => createPackHandler(image)}/>
             }
-
         </>
     );
 }
