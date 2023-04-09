@@ -4,7 +4,8 @@ import {UserResponseType} from "../../api/authApi";
 export const profileApi = createApi({
     reducerPath: 'local/api',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:7542/2.0',
+        // baseUrl: 'http://localhost:7542/2.0',
+        baseUrl: 'https://neko-back.herokuapp.com/2.0/',
         credentials: 'include'
     }),
     endpoints: (build) => ({

@@ -9,8 +9,8 @@ export const MainTable:React.FC<TablePropsType> = ({tableBody,tableHead}) => {
 
     return (
         <>
-            <TableContainer component={Paper} style={{boxShadow: '0px 0px 12px 2px rgba(150,150,150,1)'} }>
-                <Table sx={{ minWidth: 650}} aria-label="packs table">
+            <TableContainer component={Paper} style={{boxShadow: '0px 0px 12px 2px rgba(150,150,150,1)', minWidth: 750, minHeight: 400} }>
+                <Table aria-label="packs table">
                     <TableHead>
                         <TableRow style={{backgroundColor: 'silver'}}>
                         {tableHead}

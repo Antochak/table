@@ -5,7 +5,8 @@ import {FormValuesType} from "../pages/login/LoginForm";
 export const authApi = createApi({
     reducerPath: 'local/api',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:7542/2.0',
+        baseUrl: 'https://neko-back.herokuapp.com/2.0/',
+        // baseUrl: 'http://localhost:7542/2.0',
         credentials:'include'
     }),
     endpoints: (build) => ({

@@ -11,6 +11,7 @@ import { queryErrorHandler } from "../../shared/utils/QueryErrorHandler";
 import { FlexContainer, TextContainer } from "../../shared";
 import { Link, Paper, FormControlLabel, Radio, RadioGroup, Button } from "@mui/material";
 import { CardType, useGetCardsWithSearchParamsQuery, useGradeCardMutation } from "../cards/api/cardsApi";
+import styled from "styled-components";
 
 export const LearnPage = () => {
     const grades = [
@@ -46,44 +47,52 @@ export const LearnPage = () => {
     return (
         <>
             {errFetch && <PopUpSnackbar error={message} popUpType={SnackType.ERROR}/>}
-            <Paper elevation={5} style={{ width: '410px', margin: '150px auto'}}>
-                <FlexContainer flexDirection="column">
-                    {Loading && <CircularLoader/>}
-                    <Link onClick={() => navigate(PATH.PACKS)}>Back to Packs List</Link>
-                    <h2>Learn "{cardsData?.packName}" </h2>
-                    <TextContainer>Question: {currentCard?.question}</TextContainer>
-                    <TextContainer opacity="0.5">
-                        Количество попыток ответа: {currentCard?.shots}
-                    </TextContainer>
-                    <Button
-                        size={'small'}
-                        variant={'contained'}
-                        onClick={()=>setIsChecked(!isChecked)}>
-                        {!isChecked ? 'Show answer' : 'Hide answer'}
-                    </Button>
-                    {isChecked &&
-                        <>
-                            <div> Answer: {currentCard?.answer}</div>
-                            <FlexContainer flexDirection="column" alignItems="flex-start">
-                                <TextContainer>Rate your self: </TextContainer>
-                                <FormControl>
-                                    <RadioGroup
-                                        name="row-radio-buttons-group">
-                                        {grades.map((g,i) => {
-                                           return <FormControlLabel
-                                               key={'grade-' + i}
-                                               value={g.value}
-                                               onChange={()=>setSelected(g.value)}
-                                               control={<Radio />} label={g.title} />})}
-                                    </RadioGroup>
-                                </FormControl>
-                            </FlexContainer>
-                            <Button size={'small'} variant={'contained'} onClick={onNext}>next</Button>
-                        </>
-                    }
+                <FlexContainer flexDirection="column" width={'410px'} margin={'150px auto'}>
+                    <BoxShadow>
+                        <FlexContainer flexDirection="column" width="95%" margin={'10px'}>
+                            {Loading && <CircularLoader/>}
+                            <Link onClick={() => navigate(PATH.PACKS)}>Back to Packs List</Link>
+                            <h2>Learn "{cardsData?.packName}" </h2>
+                            <TextContainer>Question: {currentCard?.question}</TextContainer>
+                            <TextContainer opacity="0.5" margin="0 0 20px 0">
+                                Количество попыток ответа: {currentCard?.shots}
+                            </TextContainer>
+                            <Button
+                                size={'small'}
+                                variant={'contained'}
+                                onClick={()=>setIsChecked(!isChecked)}>
+                                {!isChecked ? 'Show answer' : 'Hide answer'}
+                            </Button>
+                        </FlexContainer>
+
+                        {
+                            isChecked &&
+                                <FlexContainer flexDirection="column" alignItems="flex-start" margin="10px" width="95%">
+                                    <TextContainer>Rate your self: </TextContainer>
+                                    Answer: {currentCard?.answer}
+                                    <FormControl>
+                                        <RadioGroup
+                                            name="row-radio-buttons-group">
+                                            {grades.map((g,i) => {
+                                                return <FormControlLabel
+                                                    key={'grade-' + i}
+                                                    value={g.value}
+                                                    onChange={()=>setSelected(g.value)}
+                                                    control={<Radio />} label={g.title} />})}
+                                        </RadioGroup>
+                                    </FormControl>
+                                    <FlexContainer>
+                                        <Button size={'small'} variant={'contained'} onClick={onNext}>next</Button>
+                                    </FlexContainer>
+                                </FlexContainer>
+                        }
+                        </BoxShadow>
                 </FlexContainer>
-            </Paper>
+
         </>
     );
 };
-
+const BoxShadow = styled.div`
+box-shadow: 1px 1px 37px 4px rgba(0,0,0,0.43);
+width: 410px
+`

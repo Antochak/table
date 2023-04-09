@@ -39,5 +39,6 @@ height: 70px;
 box-shadow: 2px 13px 33px -3px rgba(0,0,0,0.5);
 display: flex;
 margin: 0 auto;
+margin-bottom: 50px;
 flex-direction: column;
 `

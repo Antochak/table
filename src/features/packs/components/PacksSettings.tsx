@@ -21,16 +21,16 @@ type PacksSettingsPropsType = {
         slider?: { min: number, max: number }
         switcherOption?: ButtonsSwitcherOption
     }) => void
-    createPackHandler: (value: string) => void
+    createPackHandler: (title: string, file: string) => void
 }
 
 export const PacksSettings: React.FC<PacksSettingsPropsType> = ({createPackHandler, initialSettings, onSettingsChanged}) => {
-    const {setShowAddModal,showAddModal,urlSearchParams,setImage,image} = useTableQuery()
+    const {setShowAddModal,showAddModal,urlSearchParams,imageMode} = useTableQuery()
     const {CreateLoading} = usePackQuery(urlSearchParams)
 
     return (
         <>
-            <FlexContainer height="100px" justifyContent="space-between">
+            <FlexContainer height="100px"  justifyContent="space-between">
                 <FlexContainer justifyContent="flex-start">
                     <h2>Packs list</h2>
                     <MenuBar/>
@@ -56,13 +56,12 @@ export const PacksSettings: React.FC<PacksSettingsPropsType> = ({createPackHandl
 
             {CreateLoading && <CircularLoader/>}
             {showAddModal && <SetPackModal header={'Create pack'}
+                                           imageMode={true}
                                            title={''}
-                                           image={image || ''}
-                                           setImage={setImage}
                                            isOpened={showAddModal}
                                            onClose={() => setShowAddModal(false)}
-                                           onTitleChanged={(title) => createPackHandler(title)}
-                                           onImageChanged={(image) => createPackHandler(image)}/>
+                                           onTitleChanged={(title, image) => createPackHandler(title,image)}
+                                         />
             }
         </>
     );

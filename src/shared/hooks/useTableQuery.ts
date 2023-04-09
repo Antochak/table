@@ -8,7 +8,7 @@ export const useTableQuery = () => {
     const [showAddModal, setShowAddModal] = useState(false)
     const [editingModalItem, setEditingModalItem] = useState<{ id: string, title?: string, answer?: string } | null>(null)
     const [deletingModalItem, setDeletingModalItem] = useState<{ id: string, title?: string } | null>()
-    const [image, setImage] = useState<string | null>(null)
+    const [imageMode, setImageMode] = useState(false)
 
     const {data: userData} = useMeQuery({})
     const isLoggedIn = useAppSelector(state => state.auth.isLoggedIn)
@@ -57,7 +57,7 @@ export const useTableQuery = () => {
         editingModalItem,
         setEditingModalItem,
         dateFormatter,
-        image,
-        setImage
+        imageMode,
+        setImageMode
     }
 };

@@ -3,7 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 export const cardsApi = createApi({
     reducerPath: 'cardsApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:7542/2.0',
+        baseUrl: 'https://neko-back.herokuapp.com/2.0/',
+        // baseUrl: 'http://localhost:7542/2.0',
         credentials: 'include'
     }),
     tagTypes: ['cards'],
@@ -84,6 +85,8 @@ export type CardType = {
     shots: number
     card_id: string
     rating: number
+    answerImg: string
+    questionImg: string
     user_id: string
     created: string
     updated: string

@@ -1,16 +1,15 @@
 import React from 'react'
-
-import {Link} from '@mui/material'
-import {Button, Paper} from '@mui/material/'
-import {FlexContainer, TextContainer, Title} from '../../../../shared'
-import {yupResolver} from "@hookform/resolvers/yup";
-import {schema} from "../../components/validation/schema";
-
-import {FormProvider, SubmitHandler, useForm} from 'react-hook-form'
-import {FormValuesType} from "../login/LoginForm";
-import {InputField} from "../../../../shared/components/input/InputField";
-import {useRegistrationMutation} from '../../api/authApi';
-import {PATH} from "../../../../shared/constants/path";
+import { Link } from '@mui/material'
+import { PATH } from "../../../../shared/constants/path";
+import { schema } from "../../components/validation/schema";
+import { InputField } from "../../../../shared/components/input/InputField";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Button, Paper } from '@mui/material/'
+import { FormValuesType } from "../login/LoginForm";
+import { useRegistrationMutation } from '../../api';
+import { FlexContainer, TextContainer, Title } from '../../../../shared'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import {CircularLoader} from "../../../../shared/components/loader/CircilarLoader";
 
 export const RegisterForm = () => {
     const methods = useForm<FormValuesType>({
@@ -19,7 +18,7 @@ export const RegisterForm = () => {
     const [registration,{isLoading}] = useRegistrationMutation()
     const formSubmitHandler:SubmitHandler<FormValuesType> = async (data: FormValuesType) => await registration(data)
     return (
-        <FlexContainer height="100vh">
+        <FlexContainer height="100vh" flexDirection="column">
             <Paper elevation={5} style={{width: '300px', margin: '0 auto', padding: '30px'}}>
                 <FormProvider {...methods}>
                     <form onSubmit={methods.handleSubmit(formSubmitHandler)} noValidate>
@@ -43,7 +42,8 @@ export const RegisterForm = () => {
                             <TextContainer opacity={"0.5"} margin="30px 0 30px 0">
                                 <Link href={PATH.LOGIN}>Already have an account?</Link>
                             </TextContainer>
-                            <TextContainer><Link href={PATH.REGISTRATION}>Sign Up</Link></TextContainer>
+                            <TextContainer><Link href={PATH.REGISTRATION}>Sign In</Link></TextContainer>
+                            {isLoading && <CircularLoader/>}
                         </FlexContainer>
                     </form>
                 </FormProvider>

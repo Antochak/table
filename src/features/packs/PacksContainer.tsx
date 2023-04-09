@@ -7,15 +7,14 @@ import { Paginations } from "../../shared/components/pagination/Pagination";
 import { usePackQuery } from "./hooks/usePackQuery";
 import { SetPackModal } from "../../shared/components/modal-window/SetPackModal";
 import { useTableQuery } from "../../shared/hooks/useTableQuery";
-import { FlexContainer } from "../../shared";
 import { CardsSelector } from "../../shared/components/card-selector/CardsSelector";
 import { PopUpSnackbar } from "../../shared/components/popup-snackbar/PopUpSnackbar";
 import { PacksSettings } from "./components/PacksSettings";
 import { CircularLoader } from "../../shared/components/loader/CircilarLoader";
 import { DeleteItemModal } from "../../shared/components/modal-window/DeleteItemModal";
 import { TableCell, TableRow } from "@mui/material";
-import {useCreatePackMutation} from "./api/packsApi";
-import styled from "styled-components";
+import { FlexContainer, Image } from "../../shared";
+import defaultLogo from '../../assets/images/logo.png';
 
 export const PacksContainer = () => {
     const {
@@ -29,11 +28,16 @@ export const PacksContainer = () => {
         setEditingModalItem,
         deletingModalItem,
         setDeletingModalItem,
-        dateFormatter,
-        image,
-        setImage
-    } = useTableQuery()
-    const {data, message, changePackTitle, deletePack, delLoading, getLoading, error, createPack } = usePackQuery(urlSearchParams)
+        dateFormatter } = useTableQuery()
+    const {
+        data,
+        message,
+        changePackTitle,
+        deletePack,
+        delLoading,
+        getLoading,
+        error,
+        createPack } = usePackQuery(urlSearchParams)
 
     const createPackHandler = async (title: string, file?: string) => {
         await createPack({
@@ -44,17 +48,16 @@ export const PacksContainer = () => {
             }
         })
     }
-    const deleteItemHandler = async(id: string) => {
+    const deleteItemHandler = async (id: string) => {
         try {
             await deletePack({id})
         } catch(error) {
             console.warn(error)
         }
-        setDeletingModalItem(null)  // удаляем Pack , подтверждая нажатием Ok в модальном окне
+        setDeletingModalItem(null)
     }
-
     const showEditItemModal = (id: string, title: string) => {
-        setEditingModalItem({ id, title }) // сетаем в стейт  нужный Pack для редактирования
+        setEditingModalItem({ id, title })
     }
     const updateItemHandler = async (id: string, title: string) => {
         await changePackTitle({
@@ -64,7 +67,6 @@ export const PacksContainer = () => {
             }
         })
     }
-
     const openCardHandler = (id: string) => navigate(`/cards-table/${id}`)
 
     useEffect(()=>{
@@ -77,12 +79,10 @@ export const PacksContainer = () => {
     const tableBody = data?.cardPacks.map((row) => (
         <TableRow key={row._id}>
             <TableCell onClick={()=>openCardHandler(row._id)} style={{cursor: 'pointer'}}>
-                <div>
-                    <FlexContainer height="70px">
-                        {image && <Image>{image}</Image>}
-                        {row.name}
-                    </FlexContainer>
-                </div>
+                <FlexContainer justifyContent="flex-start">
+                    {<Image src={row.deckCover ? row.deckCover : defaultLogo}/>}
+                    {row.name}
+                </FlexContainer>
             </TableCell>
             <TableCell align="center">{row.cardsCount}</TableCell>
             <TableCell align="center">{dateFormatter(row.updated)}</TableCell>
@@ -99,7 +99,7 @@ export const PacksContainer = () => {
     ))
 
     return (
-        <FlexContainer width="900px" height="700px" margin="0 auto" flexDirection="column">
+        <FlexContainer width="900px" margin="0 auto" flexDirection="column">
             <PacksSettings initialSettings={{slider: { minCount: data?.minCardsCount, maxCount: data?.maxCardsCount }}}
                            onSettingsChanged={onItemsSettingsChange} createPackHandler={createPackHandler} />
             <MainTable tableBody={tableBody} tableHead={tableHead}/>
@@ -113,9 +113,8 @@ export const PacksContainer = () => {
 
             {editingModalItem?.title && 
                 <SetPackModal
-                    image={image || ''}
-                    setImage={setImage}
                     header={'Update pack'}
+                    imageMode={false}
                     title={editingModalItem?.title}
                     isOpened={!!editingModalItem}
                     onClose={() => setEditingModalItem(null)}
@@ -132,8 +131,3 @@ export const PacksContainer = () => {
         </FlexContainer>
     );
 };
-const Image = styled.img`
-    height: 100px;
-    display: flex;
-    align-self: flex-start;
-    margin: 10px 0 10px 0;`

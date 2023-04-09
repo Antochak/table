@@ -15,5 +15,6 @@ export const useCardsQuery = (urlSearchParams: URLSearchParams) => {
         ...Object.fromEntries(urlSearchParams),
         cardsPack_id: id || '',
     })
+    console.log(cardsData)
     return {deleteCard,addCard,editCard,cardsData,errDelete,isLoadingAdd,isLoadingEdit,getLoading,errAdd,errEdit,errFetch,id}
 }

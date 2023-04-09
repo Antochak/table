@@ -3,7 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 export const packsApi = createApi({
     reducerPath: 'packsApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:7542/2.0',
+        baseUrl: 'https://neko-back.herokuapp.com/2.0/',
+        // baseUrl: 'http://localhost:7542/2.0',
         credentials: 'include'
     }),
     refetchOnMountOrArgChange: true,
@@ -62,6 +63,7 @@ export type PackType = {
     name: string
     cardsCount: number
     created: string
+    deckCover: string
     updated: string
     grade: number
     more_id: string

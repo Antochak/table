@@ -1,19 +1,19 @@
 import * as React from 'react';
+import defaultLogo from '../../../assets/images/logo.png'
 import { BasicModal } from "./BasicModal";
 import { FC, useState} from "react";
-import { FlexContainer } from "../..";
+import { ImageUploader } from "../image-uploader/ImageUploader";
 import { Button, TextField } from '@mui/material/';
-import {ImageUploader} from "../image-uploader/ImageUploader";
+import {FlexContainer, Image, TextContainer} from "../..";
 
 type SetPackModalPropsType = {
 	header: string
 	title?: string
-	setImage: (value: string) => void
-	image: string
+	imageMode?: boolean
 	isOpened: boolean
 	onClose: () => void
-	onTitleChanged: (title: string) => void
-	onImageChanged?: (image: string) => void
+	onTitleChanged: (title: string, image: string) => void
+
 }
 
 export const SetPackModal: FC<SetPackModalPropsType> = (
@@ -21,20 +21,18 @@ export const SetPackModal: FC<SetPackModalPropsType> = (
 		header,
 		title,
 		onTitleChanged,
-		onImageChanged,
 		onClose,
-		setImage,
-		image,
+		imageMode,
 		isOpened
 	}) => {
 	const [titleState, setTitleState] = useState(title || '')
+	const [image, setImage] = useState<string>(defaultLogo)
 
 	const onSubmitTitleHandler = () => {
-		onTitleChanged(titleState)
+		onTitleChanged(titleState, image)
 		onClose()
 	}
 	const onUploadImage = (image: string) => {
-		onImageChanged && onImageChanged(image)
 		setImage(image)
 	}
 	return (
@@ -44,15 +42,20 @@ export const SetPackModal: FC<SetPackModalPropsType> = (
 				<TextField
 					placeholder="Set Pack name"
 					variant="standard"
-					style={{marginTop: '20px', width: '300px'}}
+					style={{margin: '20px 0 10px 0', width: '300px'}}
 					value={titleState}
 					onChange={(e) => setTitleState(e.currentTarget.value)}
 				/>
-				{!!image && <div style={{height: '100px'}}><img style={{height: '100%'}} src={image} alt=""/></div>}
-				<FlexContainer justifyContent={'flex-start'} >
-					<ImageUploader onUploadClick={(image) => onUploadImage(image)}/>
-					<span style={{marginLeft: '30px'}}>Import file</span>
-				</FlexContainer>
+
+				{imageMode &&
+					<FlexContainer flexDirection="column" justifyContent="flex-start">
+                        <Image height="70px" src={image}/>
+                        <FlexContainer justifyContent={'space-between'} alignItems={"center"} >
+                            <ImageUploader onUploadClick={(image) => onUploadImage(image)}/>
+                            <TextContainer margin="0 0 0 30px">Import file</TextContainer>
+                        </FlexContainer>
+					</FlexContainer>
+				}
 				<FlexContainer justifyContent="space-around" flexDirection="row">
 					<Button
 						style={{marginTop: '20px', width: '130px'}}
