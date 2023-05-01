@@ -1,5 +1,5 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import {FormValuesType} from "../pages/login/LoginForm";
+import { FormValuesType } from "../pages/login/LoginForm";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 
 export const authApi = createApi({
@@ -53,12 +53,8 @@ export type UserResponseType = {
     rememberMe: boolean
     error?: string
     token: string
+}
 
-}
-export type RegisterResponseType = {
-    addedUser: UserResponseType
-    error?: string
-}
 export type LoguotResponseType = {
     info: string
     error: string

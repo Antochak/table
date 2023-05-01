@@ -1,9 +1,9 @@
-import {configureStore} from "@reduxjs/toolkit";
-import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import thunkMiddleware from 'redux-thunk'
-import {authApi, authReducer} from "./features/authentification/api";
-import {packsApi} from "./features/packs/api/packsApi";
-import {cardsApi} from "./features/cards/api/cardsApi";
+import { packsApi } from "./features/packs/api/packsApi";
+import { cardsApi } from "./features/cards/api/cardsApi";
+import { configureStore } from "@reduxjs/toolkit";
+import { authApi, authReducer } from "./features/authentification/api";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 export const store = configureStore({
     reducer: {

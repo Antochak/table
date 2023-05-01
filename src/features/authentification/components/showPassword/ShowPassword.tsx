@@ -1,7 +1,7 @@
 import React from 'react';
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-import {Visibility, VisibilityOff} from "@mui/icons-material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export type ShowPasswordPropsType = {
     showPassword?: 'password' | 'text'

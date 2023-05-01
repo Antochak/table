@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../../store";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useLoginMutation } from "../../api/authApi";
+import { useLoginMutation } from "../../api";
 import { FormValuesType } from "./LoginForm";
 
 export const useLogin = () => {
