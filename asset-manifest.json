@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/Quize/static/css/main.a11af61f.css",
+    "main.js": "/Quize/static/js/main.c66d2652.js",
+    "static/js/787.493aa34a.chunk.js": "/Quize/static/js/787.493aa34a.chunk.js",
+    "static/media/Montserrat-Medium.ttf": "/Quize/static/media/Montserrat-Medium.c86e3b9010ff63c99166.ttf",
+    "static/media/logo.png": "/Quize/static/media/logo.ee97a2feff62461ef2e1.png",
+    "index.html": "/Quize/index.html",
+    "main.a11af61f.css.map": "/Quize/static/css/main.a11af61f.css.map",
+    "main.c66d2652.js.map": "/Quize/static/js/main.c66d2652.js.map",
+    "787.493aa34a.chunk.js.map": "/Quize/static/js/787.493aa34a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a11af61f.css",
+    "static/js/main.c66d2652.js"
+  ]
+}
