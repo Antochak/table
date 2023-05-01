@@ -1,18 +1,17 @@
 import React from 'react'
-
 import './App.css'
-import { useAppSelector} from "./store";
+import { PATH } from "./shared/constants/path";
+import { Layout } from "./shared/components/layout/Layout";
+import { Loading } from "./shared/components/loader/Loading";
+import { Profile } from "./features/authentification/pages/profile/Profile";
+import { LearnPage } from "./features/learn/LearnPage";
+import { LoginForm } from "./features/authentification/pages/login/LoginForm";
 import { useMeQuery } from './features/authentification/api';
-import {Loading} from "./shared/components/loader/Loading";
-import {Route, Routes} from "react-router-dom";
-import {Layout} from "./shared/components/layout/Layout";
-import {Profile} from "./features/authentification/pages/profile/Profile";
-import {PATH} from "./shared/constants/path";
-import {RegisterForm} from "./features/authentification/pages/registration/RegisterForm";
-import {LoginForm} from "./features/authentification/pages/login/LoginForm";
-import {PacksContainer} from "./features/packs/PacksContainer";
-import {CardsContainer} from "./features/cards/CardsContainer";
-import {LearnPage} from "./features/learn/LearnPage";
+import { RegisterForm } from "./features/authentification/pages/registration/RegisterForm";
+import { Route, Routes } from "react-router-dom";
+import { useAppSelector} from "./store";
+import { PacksContainer } from "./features/packs/PacksContainer";
+import { CardsContainer } from "./features/cards/CardsContainer";
 
 export function App() {
     useMeQuery({})
